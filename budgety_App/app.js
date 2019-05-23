@@ -110,7 +110,8 @@ var UIController = (function() {
         budgetLabel: '.budget__value',
         incomeLabel: '.budget__income--value',
         expensesLabel: '.budget__expenses--value',
-        percentageLabel: '.budget__expenses--percentage'
+        percentageLabel: '.budget__expenses--percentage',
+        container: '.container'
     };
     
     return {
@@ -189,6 +190,7 @@ var controller = (function(budgetCtrl, UICtrl) {
             ctrlAddItem();
         }
     });
+        document.querySelector(DOM.container).addEventListener('click', ctrlDeleteItem);
     };
     var updateBudget = function() {
         //1. calc the budget
@@ -218,15 +220,24 @@ var controller = (function(budgetCtrl, UICtrl) {
         //4. CLear the input fields
         UICtrl.clearFields();
         
-        // calc and update budget
+        //5. calc and update budget
         updateBudget();
            }
       
     };
     
+    var ctrlDeleteItem = function(event) {
+        var itemID, splitID, type, ID;
+        itemID = event.target.parentNode.parentNode.parentNode.parentNode.id;
+        if(itemID) {
+            splitID = itemID.split('-');
+            type = splitID[0];
+            ID = splitID[1];
+        }
+    };
+    
     return {
         init: function(){
-            console.log("app has started");
             UICtrl.displayBudget({
                  budget: 0,
                  totalInc: 0,
