@@ -108,9 +108,9 @@ var budgetController = (function () {
         
         calculatePercentages: function() {
 //            a=20 b=10 c=40 tot inc = 100 a=20/100=20%
-            
+            //cur = current
             data.allItems.exp.forEach(function(cur){
-                current.calculatePercentage();
+                cur.calculatePercentage(data.totals.inc);
             });
         },
         
@@ -154,7 +154,8 @@ var UIController = (function () {
         incomeLabel: '.budget__income--value',
         expensesLabel: '.budget__expenses--value',
         percentageLabel: '.budget__expenses--percentage',
-        container: '.container'
+        container: '.container',
+        expensesPercLabel: '.item__percentage'
     };
 
     return {
@@ -219,6 +220,27 @@ var UIController = (function () {
             }
 
         },
+        
+        displayPercentages: function(percentages){
+            var fields = document.querySelectorAll(DOMstrings.expensesPercLabel);
+            
+            // reusable code, for loop call our callback function
+            var nodeListForEach = function(list, callback) {
+                for (var i = 0; i < list.length; i++){
+                    callback(list[i], i);
+                }
+            };
+            
+            nodeListForEach(fields, function(current, index){
+                
+                if(percentages[index] >0) {
+                    current.textContent = percentages[index] + '%';
+                } else {
+                    current.textContent = "-------";
+                }
+                
+            });
+        },
 
         getDOMstrings: function () {
             return DOMstrings;
@@ -255,10 +277,11 @@ var controller = (function (budgetCtrl, UICtrl) {
 
     var updatePercentages = function () {
         // 1. calc percentages
-
+            budgetCtrl.calculatePercentages();
         //2. read percentages from the budget controller
-
+           var percentages = budgetCtrl.getPercentages();
         //3. update the UI with the new percentages
+            UICtrl.displayPercentages(percentages);
     }
 
     var ctrlAddItem = function () {
